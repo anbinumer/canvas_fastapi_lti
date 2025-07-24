@@ -30,6 +30,11 @@ async def root():
             "health": "/health",
             "lti_info": "/lti-info",
             "jwks": "/.well-known/jwks.json",
+            "lti_login": "/lti/login",
+            "lti_launch": "/lti/launch (GET/POST)",
+            "lti_deep_linking": "/lti/deep-linking (GET/POST)",
+            "privacy_policy": "/privacy-policy",
+            "terms_of_service": "/terms-of-service",
             "docs": "/docs"
         }
     }
@@ -57,6 +62,12 @@ async def lti_info():
             "target_link_uri": "https://canvasfastapilti-test.up.railway.app/lti/launch",
             "oidc_login_uri": "https://canvasfastapilti-test.up.railway.app/lti/login",
             "public_jwk_url": "https://canvasfastapilti-test.up.railway.app/.well-known/jwks.json",
+            "redirect_uris": [
+                "https://canvasfastapilti-test.up.railway.app/lti/launch",
+                "https://canvasfastapilti-test.up.railway.app/lti/deep-linking"
+            ],
+            "privacy_policy_url": "https://canvasfastapilti-test.up.railway.app/privacy-policy",
+            "terms_of_service_url": "https://canvasfastapilti-test.up.railway.app/terms-of-service",
             "custom_fields": {
                 "course_id": "$Canvas.course.id",
                 "user_id": "$Canvas.user.id",
@@ -68,7 +79,9 @@ async def lti_info():
             "Course context preservation", 
             "Role-based access control",
             "iframe-compatible interface",
-            "Session management"
+            "Session management",
+            "Deep linking support",
+            "Multi-method endpoint support (GET/POST)"
         ],
         "status": "Configuration endpoints available - full LTI implementation in progress"
     }
@@ -96,6 +109,41 @@ async def lti_login():
 async def lti_launch():
     """LTI launch endpoint placeholder"""
     return {"message": "LTI launch endpoint - implementation in progress"}
+
+@app.post("/lti/launch")
+async def lti_launch_post():
+    """LTI launch POST endpoint - Canvas typically uses POST for launches"""
+    return {"message": "LTI launch POST endpoint - implementation in progress"}
+
+@app.get("/lti/deep-linking")
+async def lti_deep_linking():
+    """Deep linking return endpoint"""
+    return {"message": "LTI deep linking endpoint - implementation in progress"}
+
+@app.post("/lti/deep-linking")
+async def lti_deep_linking_post():
+    """Deep linking return POST endpoint"""
+    return {"message": "LTI deep linking POST endpoint - implementation in progress"}
+
+@app.get("/privacy-policy")
+async def privacy_policy():
+    """Privacy policy endpoint"""
+    return {
+        "tool": "QA Automation LTI Tool", 
+        "privacy_policy": "This tool accesses Canvas content for QA automation purposes only. No personal data is stored permanently.",
+        "data_usage": "Session-based processing only",
+        "compliance": "FERPA compliant"
+    }
+
+@app.get("/terms-of-service")
+async def terms_of_service():
+    """Terms of service endpoint"""
+    return {
+        "tool": "QA Automation LTI Tool",
+        "terms": "This tool is provided for educational QA automation purposes.",
+        "usage": "Authorized educational use only",
+        "version": "2.4.0"
+    }
 
 @app.on_event("startup")
 async def startup_event():

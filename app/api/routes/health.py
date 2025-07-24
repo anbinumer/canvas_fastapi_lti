@@ -16,9 +16,9 @@ from fastapi import APIRouter, HTTPException, Depends, Request
 from fastapi.responses import JSONResponse
 import redis.asyncio as redis
 
-from core.config import get_settings
-from core.rate_limiter import get_rate_limiter
-from core.canvas_error_handler import get_canvas_error_handler
+from app.core.config import get_settings
+from app.core.rate_limiter import get_rate_limiter
+from app.core.canvas_error_handler import get_canvas_error_handler
 from services.canvas_service import ProductionCanvasService
 
 logger = logging.getLogger(__name__)

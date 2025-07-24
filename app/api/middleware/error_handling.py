@@ -10,8 +10,8 @@ from fastapi.responses import JSONResponse, HTMLResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
-from core.config import settings
-from core.exceptions import (
+from app.core.config import settings
+from app.core.exceptions import (
     QAAutomationException,
     LTIAuthenticationError,
     LTIValidationError,

@@ -13,12 +13,12 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, ValidationError
 
-from core.config import get_settings
+from app.core.config import get_settings
 
-from core.exceptions import LTIAuthenticationError, LTIValidationError
-from core.security import verify_lti_token, create_session_token
-from services.lti_service import LTIService
-from services.session_service import SessionService
+from app.core.exceptions import LTIAuthenticationError, LTIValidationError
+from app.core.security import verify_lti_token, create_session_token
+from app.services.lti_service import LTIService
+from app.services.session_service import SessionService
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -132,7 +132,7 @@ async def lti_launch(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid LTI launch request"
         )
-    except LTIError as e:
+    except LTIAuthenticationError as e:
         logger.error(f"LTI error: {e}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

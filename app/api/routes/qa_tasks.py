@@ -15,7 +15,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, validator
 
 # from core.dependencies import require_lti_session, get_canvas_context  # TODO: Implement dependencies
-from core.exceptions import QAAutomationException
+from app.core.exceptions import QAAutomationException
 from qa_framework.base import (
     QATaskType,
     CanvasContentType,

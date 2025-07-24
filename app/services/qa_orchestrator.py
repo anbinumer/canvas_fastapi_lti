@@ -31,7 +31,7 @@ from qa_framework.utils import (
     handle_qa_error,
     ErrorCategory
 )
-from core.exceptions import QAAutomationException
+from app.core.exceptions import QAAutomationException
 from services.canvas_service import ProductionCanvasService
 from .session_service import SessionService
 

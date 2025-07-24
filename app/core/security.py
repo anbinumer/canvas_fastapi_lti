@@ -6,10 +6,10 @@ import logging
 from typing import Dict, Any, Optional, List
 from fastapi import Request, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from core.config import settings
-from core.exceptions import LTIAuthenticationError, SessionError
-from services.lti_service import lti_service
-from services.session_service import session_service
+from app.core.config import settings
+from app.core.exceptions import LTIAuthenticationError, SessionError
+from app.services.lti_service import lti_service
+from app.services.session_service import session_service
 
 
 logger = logging.getLogger(__name__)

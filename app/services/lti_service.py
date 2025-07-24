@@ -26,8 +26,8 @@ except ImportError:
     class OidcException(Exception): pass
     PYLTI_AVAILABLE = False
 
-from core.config import settings
-from core.exceptions import LTIAuthenticationError, LTIValidationError
+from app.core.config import settings
+from app.core.exceptions import LTIAuthenticationError, LTIValidationError
 
 
 logger = logging.getLogger(__name__)

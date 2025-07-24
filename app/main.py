@@ -103,21 +103,6 @@ async def jwks():
         ]
     }
 
-@app.get("/lti/login")
-async def lti_login():
-    """LTI login endpoint placeholder"""
-    return {"message": "LTI login endpoint - implementation in progress"}
-
-@app.get("/lti/deep-linking")
-async def lti_deep_linking():
-    """Deep linking return endpoint"""
-    return {"message": "LTI deep linking endpoint - implementation in progress"}
-
-@app.post("/lti/deep-linking")
-async def lti_deep_linking_post():
-    """Deep linking return POST endpoint"""
-    return {"message": "LTI deep linking POST endpoint - implementation in progress"}
-
 @app.get("/privacy-policy")
 async def privacy_policy():
     """Privacy policy endpoint"""

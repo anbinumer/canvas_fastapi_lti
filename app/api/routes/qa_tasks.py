@@ -14,17 +14,17 @@ from fastapi import APIRouter, Depends, HTTPException, Request, BackgroundTasks
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, validator
 
-from ...core.dependencies import require_lti_session, get_canvas_context
-from ...core.exceptions import QAAutomationException
-from ...qa_framework.base import (
+# from core.dependencies import require_lti_session, get_canvas_context  # TODO: Implement dependencies
+from core.exceptions import QAAutomationException
+from qa_framework.base import (
     QATaskType,
     CanvasContentType,
     TaskStatus,
     QAExecution,
     FindReplaceConfig
 )
-from ...services.qa_orchestrator import get_qa_orchestrator
-from ...services.session_service import SessionService
+from services.qa_orchestrator import get_qa_orchestrator
+from services.session_service import SessionService
 
 logger = logging.getLogger(__name__)
 
@@ -107,7 +107,6 @@ class CanvasValidationResponse(BaseModel):
 
 @router.get("/tasks/available", response_model=AvailableTasksResponse)
 async def get_available_tasks(
-    canvas_context: Dict[str, Any] = Depends(get_canvas_context)
 ):
     """
     Get list of available QA automation tasks.
@@ -128,7 +127,6 @@ async def get_available_tasks(
 
 @router.get("/canvas/validate", response_model=CanvasValidationResponse)
 async def validate_canvas_access(
-    canvas_context: Dict[str, Any] = Depends(get_canvas_context),
     required_permissions: Optional[str] = None
 ):
     """
@@ -162,7 +160,6 @@ async def validate_canvas_access(
 
 @router.get("/course/content-summary", response_model=CourseContentSummaryResponse)
 async def get_course_content_summary(
-    canvas_context: Dict[str, Any] = Depends(get_canvas_context),
     content_types: Optional[str] = None
 ):
     """
@@ -209,7 +206,6 @@ async def get_course_content_summary(
 async def start_find_replace_task(
     request: StartFindReplaceRequest,
     background_tasks: BackgroundTasks,
-    canvas_context: Dict[str, Any] = Depends(get_canvas_context)
 ):
     """
     Start a Find & Replace QA automation task.
@@ -267,7 +263,6 @@ async def start_find_replace_task(
 @router.get("/tasks/{task_id}/status", response_model=TaskStatusResponse)
 async def get_task_status(
     task_id: str,
-    canvas_context: Dict[str, Any] = Depends(get_canvas_context)
 ):
     """
     Get current status of a QA task.
@@ -328,7 +323,6 @@ async def get_task_status(
 @router.post("/tasks/{task_id}/cancel")
 async def cancel_task(
     task_id: str,
-    canvas_context: Dict[str, Any] = Depends(get_canvas_context)
 ):
     """
     Cancel a running QA task.
@@ -372,7 +366,6 @@ async def cancel_task(
 
 @router.get("/tasks/history")
 async def get_task_history(
-    canvas_context: Dict[str, Any] = Depends(get_canvas_context),
     course_id: Optional[str] = None,
     task_type: Optional[str] = None,
     limit: int = 50
@@ -448,7 +441,6 @@ async def get_task_history(
 @router.get("/tasks/{task_id}/results")
 async def get_task_results(
     task_id: str,
-    canvas_context: Dict[str, Any] = Depends(get_canvas_context),
     format: str = "json"
 ):
     """

@@ -17,14 +17,14 @@ import time
 import aiohttp
 from bs4 import BeautifulSoup
 
-from app.core.config import get_settings
-from app.core.rate_limiter import (
+from core.config import get_settings
+from core.rate_limiter import (
     get_rate_limiter, 
     ProductionCanvasRateLimiter,
     RateLimitStatus,
     wait_for_canvas_availability
 )
-from app.core.canvas_error_handler import (
+from core.canvas_error_handler import (
     get_canvas_error_handler,
     CanvasErrorHandler,
     CanvasError,
@@ -679,7 +679,7 @@ class ProductionCanvasService:
 
 def create_canvas_service_from_lti(lti_context: Dict) -> ProductionCanvasService:
     """Create Canvas service from LTI context information with multi-instance support."""
-    from app.core.config import get_settings
+    from core.config import get_settings
     
     settings = get_settings()
     canvas_context = lti_context.get('canvas', {})
@@ -712,7 +712,7 @@ def create_canvas_service_from_lti(lti_context: Dict) -> ProductionCanvasService
 
 def create_canvas_service_for_instance(instance_name: str, access_token: str, user_id: str = "unknown") -> ProductionCanvasService:
     """Create Canvas service for a specific instance."""
-    from app.core.config import get_settings
+    from core.config import get_settings
     
     settings = get_settings()
     instances = settings.get_canvas_instances()

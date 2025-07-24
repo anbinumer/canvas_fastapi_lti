@@ -13,7 +13,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, Set, Callable
 from weakref import WeakSet
 
-from ..base.data_models import ProgressUpdate, ProgressStage, TaskStatus
+from qa_framework.base.data_models import ProgressUpdate, ProgressStage, TaskStatus
 
 logger = logging.getLogger(__name__)
 

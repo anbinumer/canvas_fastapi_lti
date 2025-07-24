@@ -12,12 +12,12 @@ from fastapi.staticfiles import StaticFiles
 from datetime import datetime
 
 # Core imports
-from app.core.config import get_settings
-from app.core.security import (
+from core.config import get_settings
+from core.security import (
     create_session_middleware,
     create_security_headers_middleware
 )
-from app.core.exceptions import (
+from core.exceptions import (
     LTIAuthenticationError,
     LTIValidationError,
     SessionError,
@@ -27,14 +27,14 @@ from app.core.exceptions import (
 )
 
 # Middleware imports
-from app.api.middleware.error_handling import (
+from api.middleware.error_handling import (
     ErrorHandlingMiddleware,
     lti_authentication_error_handler,
     canvas_api_error_handler
 )
 
 # Router imports
-from app.api.routes import lti, canvas, qa_tasks, websockets, health
+from api.routes import lti, canvas, qa_tasks, websockets, health
 
 # Get settings instance
 settings = get_settings()
@@ -56,7 +56,7 @@ app = FastAPI(
 )
 
 # Mount static files for frontend assets
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Add middleware (order matters - first added is outermost)
 app.add_middleware(ErrorHandlingMiddleware)

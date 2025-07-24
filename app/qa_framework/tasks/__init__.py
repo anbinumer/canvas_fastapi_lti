@@ -12,7 +12,7 @@ when the application starts up.
 # Each task should inherit from QATask and use the @register_qa_task decorator
 
 # Example:
-# from ..base import QATask, register_qa_task
+# from base import QATask, register_qa_task
 # 
 # @register_qa_task(
 #     name="example_task",

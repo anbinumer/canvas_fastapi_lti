@@ -10,7 +10,7 @@ import re
 from typing import Dict, List, Tuple, Optional
 from bs4 import BeautifulSoup
 
-from ..base.data_models import FindReplaceConfig
+from qa_framework.base.data_models import FindReplaceConfig
 
 logger = logging.getLogger(__name__)
 

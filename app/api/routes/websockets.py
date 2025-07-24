@@ -11,10 +11,10 @@ from typing import Dict, Set
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends, HTTPException
 from fastapi.websockets import WebSocketState
 
-from ...core.dependencies import get_canvas_context
-from ...qa_framework.utils import get_progress_broadcaster
-from ...services.qa_orchestrator import get_qa_orchestrator
-from ...services.session_service import SessionService
+# from core.dependencies import get_canvas_context  # TODO: Implement dependencies
+from qa_framework.utils import get_progress_broadcaster
+from services.qa_orchestrator import get_qa_orchestrator
+from services.session_service import SessionService
 
 logger = logging.getLogger(__name__)
 

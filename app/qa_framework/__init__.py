@@ -8,7 +8,7 @@ using AI coding assistance while maintaining consistent interfaces and error han
 ## Quick Start
 
 ```python
-from app.qa_framework import QATask, register_qa_task, get_execution_engine
+from qa_framework import QATask, register_qa_task, get_execution_engine
 
 @register_qa_task(
     name="my_qa_task",

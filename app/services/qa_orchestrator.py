@@ -11,7 +11,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, Callable
 from uuid import uuid4
 
-from ..qa_framework.base import (
+from qa_framework.base import (
     QAExecutionEngine,
     get_execution_engine,
     get_registry,
@@ -25,14 +25,14 @@ from ..qa_framework.base import (
     ProgressUpdate,
     QATaskError
 )
-from ..qa_framework.utils import (
+from qa_framework.utils import (
     get_progress_broadcaster,
     create_task_progress_tracker,
     handle_qa_error,
     ErrorCategory
 )
-from ..core.exceptions import QAAutomationException
-from .canvas_service import CanvasService, create_canvas_service_from_lti
+from core.exceptions import QAAutomationException
+from services.canvas_service import ProductionCanvasService
 from .session_service import SessionService
 
 logger = logging.getLogger(__name__)

@@ -13,12 +13,12 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, ValidationError
 
-from app.core.config import get_settings
-from app.core.dependencies import get_current_user
-from app.core.exceptions import LTIError, AuthenticationError
-from app.core.security import verify_lti_token, create_session_token
-from app.services.lti_service import LTIService
-from app.services.session_service import SessionService
+from core.config import get_settings
+
+from core.exceptions import LTIAuthenticationError, LTIValidationError
+from core.security import verify_lti_token, create_session_token
+from services.lti_service import LTIService
+from services.session_service import SessionService
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -148,8 +148,7 @@ async def lti_launch(
 
 @router.get("/session", response_model=Dict[str, Any])
 async def get_session_info(
-    request: Request,
-    current_user: Dict[str, Any] = Depends(get_current_user)
+    request: Request
 ):
     """
     Get current session information for the authenticated user.
@@ -196,8 +195,7 @@ async def get_session_info(
 
 @router.post("/refresh-session", response_model=Dict[str, Any])
 async def refresh_session(
-    request: Request,
-    current_user: Dict[str, Any] = Depends(get_current_user)
+    request: Request
 ):
     """
     Refresh the current session, extending its expiration time.
@@ -248,8 +246,7 @@ async def refresh_session(
 
 @router.post("/logout")
 async def logout(
-    request: Request,
-    current_user: Dict[str, Any] = Depends(get_current_user)
+    request: Request
 ):
     """
     Logout the current user and invalidate the session.

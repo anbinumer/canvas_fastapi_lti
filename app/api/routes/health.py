@@ -16,11 +16,10 @@ from fastapi import APIRouter, HTTPException, Depends, Request
 from fastapi.responses import JSONResponse
 import redis.asyncio as redis
 
-from app.core.config import get_settings
-from app.core.rate_limiter import get_rate_limiter
-from app.core.canvas_error_handler import get_canvas_error_handler
-from app.services.canvas_service import ProductionCanvasService
-from app.core.dependencies import get_current_user
+from core.config import get_settings
+from core.rate_limiter import get_rate_limiter
+from core.canvas_error_handler import get_canvas_error_handler
+from services.canvas_service import ProductionCanvasService
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -187,7 +186,7 @@ async def canvas_health_check(
     Tests Canvas API connectivity and basic functionality across all configured instances
     or a specific instance if provided.
     """
-    from app.core.config import get_settings
+    from core.config import get_settings
     
     settings = get_settings()
     start_time = time.time()
@@ -227,7 +226,7 @@ async def canvas_health_check(
             # Use provided credentials or test anonymously
             if access_token:
                 # Test with authenticated endpoint
-                from app.services.canvas_service import create_canvas_service_for_instance
+                from services.canvas_service import create_canvas_service_for_instance
                 
                 async with create_canvas_service_for_instance(
                     instance_name, 
@@ -298,7 +297,7 @@ async def canvas_health_check(
         rate_limiter = await get_rate_limiter()
         
         # Test rate limit check
-        from app.core.rate_limiter import check_canvas_rate_limit
+        from core.rate_limiter import check_canvas_rate_limit
         rate_status = await check_canvas_rate_limit("health_check", "default", 1)
         
         health_status["tests"]["rate_limiting"] = {
@@ -355,15 +354,14 @@ async def canvas_health_check(
 
 @router.post("/canvas/switch-instance")
 async def switch_canvas_instance(
-    instance_name: str,
-    current_user: Dict = Depends(get_current_user)
+    instance_name: str
 ):
     """
     Switch the active Canvas instance.
     
     Requires authentication. Used for testing across Test → Beta → Prod progression.
     """
-    from app.core.config import get_settings
+    from core.config import get_settings
     
     try:
         settings = get_settings()
@@ -417,7 +415,7 @@ async def get_canvas_instances():
     
     Useful for testing and monitoring instance configuration.
     """
-    from app.core.config import get_settings
+    from core.config import get_settings
     
     try:
         settings = get_settings()
@@ -611,8 +609,7 @@ async def liveness_check():
 
 @router.post("/rate-limit/reset")
 async def reset_rate_limits(
-    user_id: Optional[str] = None,
-    current_user: Dict = Depends(get_current_user)
+    user_id: Optional[str] = None
 ):
     """
     Admin endpoint to reset rate limits for a user.
@@ -674,9 +671,7 @@ async def reset_rate_limits(
 
 
 @router.get("/diagnostics")
-async def system_diagnostics(
-    current_user: Dict = Depends(get_current_user)
-):
+async def system_diagnostics():
     """
     Comprehensive system diagnostics for troubleshooting.
     

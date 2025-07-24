@@ -16,7 +16,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
 
-from ..base import (
+from qa_framework.base import (
     QATask, 
     register_qa_task, 
     TaskInfo, 
@@ -31,7 +31,7 @@ from ..base import (
     QATaskConfigError,
     QATaskExecutionError
 )
-from ..utils import handle_qa_error, ErrorCategory
+from qa_framework.utils import handle_qa_error, ErrorCategory
 
 logger = logging.getLogger(__name__)
 
@@ -336,7 +336,7 @@ class FindReplaceQATask(QATask):
         """Get Canvas service instance with authentication"""
         # This will be implemented when we create the Canvas service
         # For now, create a placeholder
-        from ...services.canvas_service import CanvasService
+        from services.canvas_service import CanvasService
         return CanvasService(
             base_url=config.canvas_instance_url,
             access_token=canvas_context.get('access_token') if canvas_context else None
@@ -563,7 +563,7 @@ class FindReplaceQATask(QATask):
         For now, providing a placeholder.
         """
         # TODO: Use the canvas scanner utility
-        from ..utils.canvas_scanner import replace_urls_in_content
+        from qa_framework.utils.canvas_scanner import replace_urls_in_content
         return await replace_urls_in_content(content, config.url_mappings, config)
     
     def _is_valid_url(self, url: str) -> bool:

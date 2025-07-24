@@ -13,7 +13,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Type, Union
 from dataclasses import dataclass
 
-from ..base.qa_task import QATaskError, QATaskExecutionError, QATaskTimeoutError
+from qa_framework.base.qa_task import QATaskError, QATaskExecutionError, QATaskTimeoutError
 
 logger = logging.getLogger(__name__)
 

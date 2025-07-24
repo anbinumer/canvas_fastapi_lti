@@ -6,6 +6,7 @@ import logging
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from datetime import datetime
+from app.api.routes.lti import router as lti_router
 
 # Configure basic logging
 logging.basicConfig(level=logging.INFO)
@@ -17,6 +18,8 @@ app = FastAPI(
     description="Canvas LTI 1.3 QA Automation Tool",
     version="2.4.0"
 )
+
+app.include_router(lti_router)
 
 @app.get("/")
 async def root():
@@ -105,16 +108,6 @@ async def lti_login():
     """LTI login endpoint placeholder"""
     return {"message": "LTI login endpoint - implementation in progress"}
 
-@app.get("/lti/launch")
-async def lti_launch():
-    """LTI launch endpoint placeholder"""
-    return {"message": "LTI launch endpoint - implementation in progress"}
-
-@app.post("/lti/launch")
-async def lti_launch_post():
-    """LTI launch POST endpoint - Canvas typically uses POST for launches"""
-    return {"message": "LTI launch POST endpoint - implementation in progress"}
-
 @app.get("/lti/deep-linking")
 async def lti_deep_linking():
     """Deep linking return endpoint"""
@@ -144,6 +137,10 @@ async def terms_of_service():
         "usage": "Authorized educational use only",
         "version": "2.4.0"
     }
+
+@app.get("/debug/routes")
+async def debug_routes():
+    return [{"path": route.path, "methods": list(route.methods)} for route in app.routes]
 
 @app.on_event("startup")
 async def startup_event():

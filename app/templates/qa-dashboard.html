@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QA Automation Dashboard - ACU</title>
+    
+    <!-- ACU Brand Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/acu-brand.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/canvas-integration.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/qa-interface.css') }}">
+    
+    <!-- Canvas LTI integration styles -->
+    <style>
+        /* Canvas iframe optimizations */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--acu-cream);
+        }
+        
+        .canvas-lti-container {
+            max-width: 100%;
+            min-height: 100vh;
+            padding: var(--canvas-iframe-padding);
+        }
+        
+        /* Hide elements that may cause Canvas iframe issues */
+        .no-canvas {
+            display: none;
+        }
+        
+        /* Loading states */
+        .acu-loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--acu-cream);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        
+        .acu-loading-screen.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="acu-loading-screen">
+        <div class="qa-loading-spinner"></div>
+        <div class="qa-loading-text acu-ml-md">Loading QA Dashboard...</div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="canvas-lti-container">
+        <!-- QA Dashboard -->
+        <div id="qa-dashboard" class="qa-dashboard">
+            <!-- Dashboard Header -->
+            <div class="qa-dashboard-header">
+                <div>
+                    <h1 class="acu-heading-1 acu-mb-sm">QA Automation Dashboard</h1>
+                    <p class="acu-body-large">
+                        Automate quality assurance tasks for your Canvas course content
+                    </p>
+                </div>
+                <div class="acu-text-right">
+                    <div class="acu-status-badge acu-status-purple">
+                        Ready
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div class="qa-dashboard-content">
+                <!-- Left Panel: Task Selection and Configuration -->
+                <div class="qa-left-panel">
+                    <!-- Task Selector -->
+                    <div id="qa-task-selector" class="qa-task-selector acu-mb-lg">
+                        <!-- Task selection content will be populated by JavaScript -->
+                        <div class="qa-task-selector-header">
+                            <h3 class="acu-heading-3 acu-mb-0">Available QA Tasks</h3>
+                        </div>
+                        <div class="qa-available-tasks">
+                            <div class="acu-text-center acu-p-xl">
+                                <div class="qa-loading-spinner"></div>
+                                <p class="acu-text-muted acu-mt-md">Loading available tasks...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configuration Panel -->
+                    <div id="qa-configuration-panel" class="qa-configuration-panel" style="display: none;">
+                        <!-- Configuration content will be populated by JavaScript -->
+                        <div class="qa-configuration-header">
+                            <h3 class="acu-heading-3 acu-mb-0">Configure Task</h3>
+                        </div>
+                        <div class="qa-configuration-content">
+                            <div class="acu-text-center acu-p-xl">
+                                <p class="acu-text-muted">Select a QA task to configure options.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel: Results and Status -->
+                <div class="qa-right-panel">
+                    <!-- Session Information -->
+                    <div id="user-context" class="acu-mb-lg">
+                        <!-- User context will be populated by main.js -->
+                    </div>
+
+                    <!-- Results Container -->
+                    <div id="qa-results-container" class="qa-results-container" style="display: none;">
+                        <!-- Results content will be populated by JavaScript -->
+                        <div class="acu-text-center acu-p-xl">
+                            <p class="acu-text-muted">No results to display. Run a QA task to see results here.</p>
+                        </div>
+                    </div>
+
+                    <!-- Welcome Message (shown when no results) -->
+                    <div id="qa-welcome" class="qa-welcome acu-card acu-card-info">
+                        <div class="acu-card-body acu-text-center">
+                            <h3 class="acu-heading-3 acu-mb-md">Welcome to QA Automation</h3>
+                            <p class="acu-body acu-mb-lg">
+                                Select a QA task from the left panel to get started. You can automate 
+                                URL replacements, content validation, and other quality assurance tasks 
+                                for your Canvas course.
+                            </p>
+                            <div class="qa-feature-list">
+                                <div class="qa-feature-item acu-mb-sm">
+                                    <span class="acu-text-success">✓</span>
+                                    <span class="acu-ml-sm">Find and replace URLs across all content types</span>
+                                </div>
+                                <div class="qa-feature-item acu-mb-sm">
+                                    <span class="acu-text-success">✓</span>
+                                    <span class="acu-ml-sm">Real-time progress tracking</span>
+                                </div>
+                                <div class="qa-feature-item acu-mb-sm">
+                                    <span class="acu-text-success">✓</span>
+                                    <span class="acu-ml-sm">Comprehensive results reporting</span>
+                                </div>
+                                <div class="qa-feature-item">
+                                    <span class="acu-text-success">✓</span>
+                                    <span class="acu-ml-sm">Export to PDF and CSV</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Tracking Modal -->
+        <div id="qa-progress-container" class="qa-progress-container">
+            <!-- Progress content will be populated by JavaScript -->
+        </div>
+
+        <!-- Notifications Container -->
+        <div id="acu-notifications" class="acu-notifications-container">
+            <!-- Notifications will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Error Modal Template -->
+    <div id="qa-error-modal" class="canvas-modal-overlay" style="display: none;">
+        <div class="canvas-modal">
+            <div class="canvas-modal-header">
+                <h3>Error</h3>
+                <button class="canvas-modal-close" onclick="ACUQAApp.components.modal.hide()">&times;</button>
+            </div>
+            <div class="canvas-modal-body">
+                <div id="qa-error-content">
+                    <!-- Error content will be populated by JavaScript -->
+                </div>
+            </div>
+            <div class="canvas-modal-footer">
+                <button class="acu-btn acu-btn-primary" onclick="ACUQAApp.components.modal.hide()">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal Template -->
+    <div id="qa-help-modal" class="canvas-modal-overlay" style="display: none;">
+        <div class="canvas-modal">
+            <div class="canvas-modal-header">
+                <h3>QA Automation Help</h3>
+                <button class="canvas-modal-close" onclick="ACUQAApp.components.modal.hide()">&times;</button>
+            </div>
+            <div class="canvas-modal-body">
+                <div class="qa-help-content">
+                    <h4>Getting Started</h4>
+                    <p>Follow these steps to run QA automation tasks:</p>
+                    <ol>
+                        <li><strong>Select a QA Task:</strong> Choose from available automation tasks in the left panel</li>
+                        <li><strong>Configure Options:</strong> Set up URL mappings and task-specific options</li>
+                        <li><strong>Start Execution:</strong> Click "Start QA Task" to begin processing</li>
+                        <li><strong>Monitor Progress:</strong> Watch real-time updates as the task processes your content</li>
+                        <li><strong>Review Results:</strong> Examine findings and export reports when complete</li>
+                    </ol>
+                    
+                    <h4>Find & Replace URL Task</h4>
+                    <p>This task helps you update URLs across all Canvas content types:</p>
+                    <ul>
+                        <li>Add multiple find/replace URL pairs</li>
+                        <li>Choose case-sensitive or whole-word matching</li>
+                        <li>Use preview mode to see changes without applying them</li>
+                        <li>View detailed before/after comparisons in results</li>
+                    </ul>
+                    
+                    <h4>Export Options</h4>
+                    <p>Save and share your QA results:</p>
+                    <ul>
+                        <li><strong>PDF Report:</strong> Professional report with ACU branding</li>
+                        <li><strong>CSV Export:</strong> Detailed data for analysis in Excel</li>
+                        <li><strong>Print:</strong> Print-friendly format for documentation</li>
+                        <li><strong>Share:</strong> Copy summary to share with colleagues</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="canvas-modal-footer">
+                <button class="acu-btn acu-btn-primary" onclick="ACUQAApp.components.modal.hide()">
+                    Got it!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Button (Floating) -->
+    <button id="qa-help-button" class="qa-help-button" 
+            onclick="ACUQAApp.components.modal.show('qa-help-modal')"
+            title="Get Help">
+        ?
+    </button>
+
+    <!-- JavaScript Dependencies -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/lti-session.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/qa-dashboard.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/qa-progress.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/qa-results.js') }}"></script>
+
+    <!-- Initialization Script -->
+    <script>
+        // Wait for DOM and all scripts to load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('[QA Dashboard] DOM loaded, initializing...');
+            
+            // Hide loading screen
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen) {
+                setTimeout(() => {
+                    loadingScreen.classList.add('hidden');
+                }, 500);
+            }
+            
+            // Initialize QA Dashboard if main app is ready
+            if (typeof ACUQAApp !== 'undefined' && ACUQAApp.state.initialized) {
+                initializeQADashboard();
+            } else {
+                // Wait for main app to initialize
+                const checkInterval = setInterval(() => {
+                    if (typeof ACUQAApp !== 'undefined' && ACUQAApp.state.initialized) {
+                        clearInterval(checkInterval);
+                        initializeQADashboard();
+                    }
+                }, 100);
+                
+                // Timeout after 10 seconds
+                setTimeout(() => {
+                    clearInterval(checkInterval);
+                    console.error('[QA Dashboard] Timeout waiting for ACUQAApp initialization');
+                    showInitializationError();
+                }, 10000);
+            }
+        });
+        
+        function initializeQADashboard() {
+            try {
+                // Initialize QA functionality
+                if (ACUQAApp.qa && typeof ACUQAApp.qa.init === 'function') {
+                    ACUQAApp.qa.init();
+                } else {
+                    console.error('[QA Dashboard] QA module not available');
+                    showInitializationError();
+                }
+            } catch (error) {
+                console.error('[QA Dashboard] Initialization error:', error);
+                showInitializationError();
+            }
+        }
+        
+        function showInitializationError() {
+            const dashboard = document.getElementById('qa-dashboard');
+            if (dashboard) {
+                dashboard.innerHTML = `
+                    <div class="qa-error-container">
+                        <div class="qa-error-icon">⚠️</div>
+                        <div class="qa-error-title">Initialization Error</div>
+                        <div class="qa-error-message">
+                            Failed to initialize QA Dashboard. Please refresh the page to try again.
+                        </div>
+                        <div class="qa-error-actions">
+                            <button class="acu-btn acu-btn-primary" onclick="window.location.reload()">
+                                Refresh Page
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Handle Canvas iframe resize events
+        window.addEventListener('resize', function() {
+            if (typeof ACUQAApp !== 'undefined' && ACUQAApp.handleResize) {
+                ACUQAApp.handleResize();
+            }
+        });
+        
+        // Handle Canvas navigation events
+        window.addEventListener('beforeunload', function() {
+            // Clean up WebSocket connections
+            if (typeof ACUQAApp !== 'undefined' && 
+                ACUQAApp.qa && 
+                ACUQAApp.qa.components && 
+                ACUQAApp.qa.components.websocketManager) {
+                ACUQAApp.qa.components.websocketManager.disconnect();
+            }
+        });
+    </script>
+
+    <!-- Additional CSS for help button and responsive enhancements -->
+    <style>
+        .qa-help-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--acu-purple);
+            color: var(--acu-text-inverse);
+            border: none;
+            font-size: var(--acu-font-size-xl);
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: var(--acu-shadow-lg);
+            transition: all 0.2s ease-in-out;
+            z-index: 1000;
+        }
+        
+        .qa-help-button:hover {
+            background: var(--acu-deep-purple);
+            transform: scale(1.1);
+        }
+        
+        .qa-feature-list {
+            text-align: left;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .qa-feature-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .qa-welcome {
+            margin-top: var(--acu-space-xl);
+        }
+        
+        .qa-help-content h4 {
+            color: var(--acu-deep-purple);
+            margin-top: var(--acu-space-lg);
+            margin-bottom: var(--acu-space-md);
+        }
+        
+        .qa-help-content ul, 
+        .qa-help-content ol {
+            padding-left: var(--acu-space-lg);
+        }
+        
+        .qa-help-content li {
+            margin-bottom: var(--acu-space-sm);
+            line-height: 1.6;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .qa-help-button {
+                bottom: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+                font-size: var(--acu-font-size-lg);
+            }
+            
+            .qa-dashboard-header {
+                text-align: center;
+            }
+            
+            .qa-dashboard-header .acu-text-right {
+                text-align: center;
+                margin-top: var(--acu-space-md);
+            }
+        }
+        
+        /* Canvas iframe specific adjustments */
+        @media (max-height: 600px) {
+            .qa-dashboard {
+                padding: var(--acu-space-sm);
+                gap: var(--acu-space-sm);
+            }
+            
+            .qa-dashboard-header {
+                padding: var(--acu-space-md);
+            }
+        }
+        
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .qa-help-button {
+                border: 2px solid var(--acu-text-inverse);
+            }
+        }
+        
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            .qa-help-button {
+                transition: none;
+            }
+            
+            .qa-help-button:hover {
+                transform: none;
+            }
+        }
+    </style>
+</body>
+</html> 

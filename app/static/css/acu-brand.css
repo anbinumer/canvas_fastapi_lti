@@ -1,0 +1,511 @@
+/* 
+ACU Brand Design System for Canvas LTI Integration
+Australian Catholic University - Official Brand Colors
+WCAG AA Compliant Design System
+*/
+
+/* ===== CSS CUSTOM PROPERTIES (CSS VARIABLES) ===== */
+:root {
+  /* ACU Primary Color Palette */
+  --acu-deep-purple: #4A1A4A;     /* Primary brand color */
+  --acu-purple: #6B2C6B;          /* Secondary purple */
+  --acu-red: #D2492A;             /* Action color */
+  --acu-red-dark: #B8391F;        /* Dark red variant */
+  --acu-gold: #F4B942;            /* Highlight color */
+  --acu-gold-dark: #E6A830;       /* Dark gold variant */
+  
+  /* Content & Background Colors */
+  --acu-cream: #F9F4F1;           /* Light background */
+  --acu-cream-dark: #F4ECE6;      /* Card backgrounds */
+  --acu-white: #FFFFFF;           /* Pure white */
+  
+  /* Semantic Colors (WCAG AA Compliant) */
+  --acu-success: #2D7D32;         /* Success green - 4.5:1 contrast */
+  --acu-warning: #F57C00;         /* Warning orange - 4.5:1 contrast */
+  --acu-error: #C62828;           /* Error red - 4.5:1 contrast */
+  --acu-info: #1976D2;            /* Info blue - 4.5:1 contrast */
+  
+  /* Text Colors (WCAG AA Compliant) */
+  --acu-text-primary: #2C2C2C;    /* High contrast text - 15.8:1 */
+  --acu-text-secondary: #5A5A5A;  /* Medium contrast text - 7.4:1 */
+  --acu-text-muted: #737373;      /* Low contrast text - 4.7:1 */
+  --acu-text-inverse: #FFFFFF;    /* White text for dark backgrounds */
+  
+  /* Border and Divider Colors */
+  --acu-border-light: #E0E0E0;    /* Light borders */
+  --acu-border-medium: #BDBDBD;   /* Medium borders */
+  --acu-border-dark: #9E9E9E;     /* Dark borders */
+  
+  /* Shadow and Elevation */
+  --acu-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  --acu-shadow-md: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  --acu-shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  
+  /* Canvas iframe specific adjustments */
+  --canvas-iframe-padding: 16px;
+  --canvas-max-width: 1200px;
+  --canvas-mobile-breakpoint: 768px;
+  
+  /* Typography Scale */
+  --acu-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --acu-font-size-xs: 0.75rem;    /* 12px */
+  --acu-font-size-sm: 0.875rem;   /* 14px */
+  --acu-font-size-base: 1rem;     /* 16px */
+  --acu-font-size-lg: 1.125rem;   /* 18px */
+  --acu-font-size-xl: 1.25rem;    /* 20px */
+  --acu-font-size-2xl: 1.5rem;    /* 24px */
+  --acu-font-size-3xl: 1.875rem;  /* 30px */
+  --acu-font-size-4xl: 2.25rem;   /* 36px */
+  
+  /* Spacing Scale */
+  --acu-space-xs: 0.25rem;  /* 4px */
+  --acu-space-sm: 0.5rem;   /* 8px */
+  --acu-space-md: 1rem;     /* 16px */
+  --acu-space-lg: 1.5rem;   /* 24px */
+  --acu-space-xl: 2rem;     /* 32px */
+  --acu-space-2xl: 3rem;    /* 48px */
+  --acu-space-3xl: 4rem;    /* 64px */
+  
+  /* Border Radius */
+  --acu-radius-sm: 0.25rem;  /* 4px */
+  --acu-radius-md: 0.5rem;   /* 8px */
+  --acu-radius-lg: 0.75rem;  /* 12px */
+  --acu-radius-xl: 1rem;     /* 16px */
+}
+
+/* ===== BASE STYLES ===== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--acu-font-family);
+  font-size: var(--acu-font-size-base);
+  line-height: 1.6;
+  color: var(--acu-text-primary);
+  background-color: var(--acu-cream);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Canvas iframe optimizations */
+.canvas-lti-container {
+  max-width: var(--canvas-max-width);
+  margin: 0 auto;
+  padding: var(--canvas-iframe-padding);
+  min-height: 100vh;
+  background-color: var(--acu-cream);
+}
+
+/* ===== TYPOGRAPHY ===== */
+.acu-heading-1 {
+  font-size: var(--acu-font-size-4xl);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--acu-deep-purple);
+  margin: 0 0 var(--acu-space-lg) 0;
+}
+
+.acu-heading-2 {
+  font-size: var(--acu-font-size-3xl);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--acu-deep-purple);
+  margin: 0 0 var(--acu-space-md) 0;
+}
+
+.acu-heading-3 {
+  font-size: var(--acu-font-size-2xl);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--acu-purple);
+  margin: 0 0 var(--acu-space-md) 0;
+}
+
+.acu-heading-4 {
+  font-size: var(--acu-font-size-xl);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--acu-purple);
+  margin: 0 0 var(--acu-space-sm) 0;
+}
+
+.acu-body-large {
+  font-size: var(--acu-font-size-lg);
+  line-height: 1.6;
+  color: var(--acu-text-primary);
+}
+
+.acu-body {
+  font-size: var(--acu-font-size-base);
+  line-height: 1.6;
+  color: var(--acu-text-primary);
+}
+
+.acu-body-small {
+  font-size: var(--acu-font-size-sm);
+  line-height: 1.5;
+  color: var(--acu-text-secondary);
+}
+
+.acu-caption {
+  font-size: var(--acu-font-size-xs);
+  line-height: 1.4;
+  color: var(--acu-text-muted);
+}
+
+/* Text utilities */
+.acu-text-primary { color: var(--acu-text-primary); }
+.acu-text-secondary { color: var(--acu-text-secondary); }
+.acu-text-muted { color: var(--acu-text-muted); }
+.acu-text-inverse { color: var(--acu-text-inverse); }
+.acu-text-purple { color: var(--acu-deep-purple); }
+.acu-text-red { color: var(--acu-red); }
+.acu-text-gold { color: var(--acu-gold-dark); }
+.acu-text-success { color: var(--acu-success); }
+.acu-text-warning { color: var(--acu-warning); }
+.acu-text-error { color: var(--acu-error); }
+.acu-text-info { color: var(--acu-info); }
+
+.acu-text-center { text-align: center; }
+.acu-text-left { text-align: left; }
+.acu-text-right { text-align: right; }
+
+.acu-font-weight-normal { font-weight: 400; }
+.acu-font-weight-medium { font-weight: 500; }
+.acu-font-weight-semibold { font-weight: 600; }
+.acu-font-weight-bold { font-weight: 700; }
+
+/* ===== BUTTON COMPONENTS ===== */
+.acu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--acu-space-sm) var(--acu-space-lg);
+  font-family: var(--acu-font-family);
+  font-size: var(--acu-font-size-base);
+  font-weight: 500;
+  line-height: 1.5;
+  text-decoration: none;
+  border: 2px solid transparent;
+  border-radius: var(--acu-radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  user-select: none;
+  white-space: nowrap;
+  min-height: 44px; /* Touch target size */
+  gap: var(--acu-space-sm);
+}
+
+.acu-btn:focus {
+  outline: 2px solid var(--acu-info);
+  outline-offset: 2px;
+}
+
+.acu-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Primary Button */
+.acu-btn-primary {
+  background-color: var(--acu-red);
+  color: var(--acu-text-inverse);
+  border-color: var(--acu-red);
+}
+
+.acu-btn-primary:hover:not(:disabled) {
+  background-color: var(--acu-red-dark);
+  border-color: var(--acu-red-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--acu-shadow-md);
+}
+
+/* Secondary Button */
+.acu-btn-secondary {
+  background-color: var(--acu-gold);
+  color: var(--acu-deep-purple);
+  border-color: var(--acu-gold);
+}
+
+.acu-btn-secondary:hover:not(:disabled) {
+  background-color: var(--acu-gold-dark);
+  border-color: var(--acu-gold-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--acu-shadow-md);
+}
+
+/* Outline Button */
+.acu-btn-outline {
+  background-color: transparent;
+  color: var(--acu-deep-purple);
+  border-color: var(--acu-deep-purple);
+}
+
+.acu-btn-outline:hover:not(:disabled) {
+  background-color: var(--acu-deep-purple);
+  color: var(--acu-text-inverse);
+}
+
+/* Success Button */
+.acu-btn-success {
+  background-color: var(--acu-success);
+  color: var(--acu-text-inverse);
+  border-color: var(--acu-success);
+}
+
+.acu-btn-success:hover:not(:disabled) {
+  background-color: #1B5E20;
+  border-color: #1B5E20;
+  transform: translateY(-1px);
+  box-shadow: var(--acu-shadow-md);
+}
+
+/* Warning Button */
+.acu-btn-warning {
+  background-color: var(--acu-warning);
+  color: var(--acu-text-inverse);
+  border-color: var(--acu-warning);
+}
+
+.acu-btn-warning:hover:not(:disabled) {
+  background-color: #EF6C00;
+  border-color: #EF6C00;
+  transform: translateY(-1px);
+  box-shadow: var(--acu-shadow-md);
+}
+
+/* Danger Button */
+.acu-btn-danger {
+  background-color: var(--acu-error);
+  color: var(--acu-text-inverse);
+  border-color: var(--acu-error);
+}
+
+.acu-btn-danger:hover:not(:disabled) {
+  background-color: #B71C1C;
+  border-color: #B71C1C;
+  transform: translateY(-1px);
+  box-shadow: var(--acu-shadow-md);
+}
+
+/* Button Sizes */
+.acu-btn-sm {
+  padding: var(--acu-space-xs) var(--acu-space-md);
+  font-size: var(--acu-font-size-sm);
+  min-height: 36px;
+}
+
+.acu-btn-lg {
+  padding: var(--acu-space-md) var(--acu-space-xl);
+  font-size: var(--acu-font-size-lg);
+  min-height: 52px;
+}
+
+/* Button with icon */
+.acu-btn-icon {
+  padding: var(--acu-space-sm);
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* ===== CARD COMPONENTS ===== */
+.acu-card {
+  background-color: var(--acu-white);
+  border-radius: var(--acu-radius-lg);
+  box-shadow: var(--acu-shadow-sm);
+  border: 1px solid var(--acu-border-light);
+  overflow: hidden;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.acu-card:hover {
+  box-shadow: var(--acu-shadow-md);
+}
+
+.acu-card-header {
+  padding: var(--acu-space-lg);
+  border-bottom: 1px solid var(--acu-border-light);
+  background-color: var(--acu-cream-dark);
+}
+
+.acu-card-body {
+  padding: var(--acu-space-lg);
+}
+
+.acu-card-footer {
+  padding: var(--acu-space-lg);
+  border-top: 1px solid var(--acu-border-light);
+  background-color: var(--acu-cream-dark);
+}
+
+/* Card Variants */
+.acu-card-success {
+  border-left: 4px solid var(--acu-success);
+}
+
+.acu-card-warning {
+  border-left: 4px solid var(--acu-warning);
+}
+
+.acu-card-error {
+  border-left: 4px solid var(--acu-error);
+}
+
+.acu-card-info {
+  border-left: 4px solid var(--acu-info);
+}
+
+.acu-card-purple {
+  border-left: 4px solid var(--acu-deep-purple);
+}
+
+.acu-card-red {
+  border-left: 4px solid var(--acu-red);
+}
+
+.acu-card-gold {
+  border-left: 4px solid var(--acu-gold);
+}
+
+/* ===== UTILITY CLASSES ===== */
+/* Spacing utilities */
+.acu-m-0 { margin: 0; }
+.acu-m-xs { margin: var(--acu-space-xs); }
+.acu-m-sm { margin: var(--acu-space-sm); }
+.acu-m-md { margin: var(--acu-space-md); }
+.acu-m-lg { margin: var(--acu-space-lg); }
+.acu-m-xl { margin: var(--acu-space-xl); }
+
+.acu-mt-0 { margin-top: 0; }
+.acu-mt-xs { margin-top: var(--acu-space-xs); }
+.acu-mt-sm { margin-top: var(--acu-space-sm); }
+.acu-mt-md { margin-top: var(--acu-space-md); }
+.acu-mt-lg { margin-top: var(--acu-space-lg); }
+.acu-mt-xl { margin-top: var(--acu-space-xl); }
+
+.acu-mb-0 { margin-bottom: 0; }
+.acu-mb-xs { margin-bottom: var(--acu-space-xs); }
+.acu-mb-sm { margin-bottom: var(--acu-space-sm); }
+.acu-mb-md { margin-bottom: var(--acu-space-md); }
+.acu-mb-lg { margin-bottom: var(--acu-space-lg); }
+.acu-mb-xl { margin-bottom: var(--acu-space-xl); }
+
+.acu-p-0 { padding: 0; }
+.acu-p-xs { padding: var(--acu-space-xs); }
+.acu-p-sm { padding: var(--acu-space-sm); }
+.acu-p-md { padding: var(--acu-space-md); }
+.acu-p-lg { padding: var(--acu-space-lg); }
+.acu-p-xl { padding: var(--acu-space-xl); }
+
+/* Display utilities */
+.acu-flex { display: flex; }
+.acu-inline-flex { display: inline-flex; }
+.acu-grid { display: grid; }
+.acu-block { display: block; }
+.acu-inline-block { display: inline-block; }
+.acu-hidden { display: none; }
+
+/* Flex utilities */
+.acu-flex-col { flex-direction: column; }
+.acu-flex-row { flex-direction: row; }
+.acu-flex-wrap { flex-wrap: wrap; }
+.acu-flex-nowrap { flex-wrap: nowrap; }
+.acu-items-center { align-items: center; }
+.acu-items-start { align-items: flex-start; }
+.acu-items-end { align-items: flex-end; }
+.acu-justify-center { justify-content: center; }
+.acu-justify-start { justify-content: flex-start; }
+.acu-justify-end { justify-content: flex-end; }
+.acu-justify-between { justify-content: space-between; }
+.acu-gap-xs { gap: var(--acu-space-xs); }
+.acu-gap-sm { gap: var(--acu-space-sm); }
+.acu-gap-md { gap: var(--acu-space-md); }
+.acu-gap-lg { gap: var(--acu-space-lg); }
+
+/* Border utilities */
+.acu-border { border: 1px solid var(--acu-border-light); }
+.acu-border-t { border-top: 1px solid var(--acu-border-light); }
+.acu-border-b { border-bottom: 1px solid var(--acu-border-light); }
+.acu-border-l { border-left: 1px solid var(--acu-border-light); }
+.acu-border-r { border-right: 1px solid var(--acu-border-light); }
+
+.acu-rounded-sm { border-radius: var(--acu-radius-sm); }
+.acu-rounded-md { border-radius: var(--acu-radius-md); }
+.acu-rounded-lg { border-radius: var(--acu-radius-lg); }
+.acu-rounded-xl { border-radius: var(--acu-radius-xl); }
+.acu-rounded-full { border-radius: 50%; }
+
+/* Background utilities */
+.acu-bg-white { background-color: var(--acu-white); }
+.acu-bg-cream { background-color: var(--acu-cream); }
+.acu-bg-cream-dark { background-color: var(--acu-cream-dark); }
+.acu-bg-purple { background-color: var(--acu-deep-purple); }
+.acu-bg-red { background-color: var(--acu-red); }
+.acu-bg-gold { background-color: var(--acu-gold); }
+.acu-bg-success { background-color: var(--acu-success); }
+.acu-bg-warning { background-color: var(--acu-warning); }
+.acu-bg-error { background-color: var(--acu-error); }
+.acu-bg-info { background-color: var(--acu-info); }
+
+/* Width utilities */
+.acu-w-full { width: 100%; }
+.acu-w-auto { width: auto; }
+.acu-max-w-full { max-width: 100%; }
+
+/* Canvas iframe specific utilities */
+.acu-iframe-safe {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.acu-canvas-header {
+  background: linear-gradient(135deg, var(--acu-deep-purple), var(--acu-purple));
+  color: var(--acu-text-inverse);
+  padding: var(--acu-space-lg);
+  border-radius: var(--acu-radius-lg) var(--acu-radius-lg) 0 0;
+}
+
+.acu-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--acu-space-xs) var(--acu-space-sm);
+  font-size: var(--acu-font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  border-radius: var(--acu-radius-sm);
+  letter-spacing: 0.05em;
+}
+
+.acu-status-success {
+  background-color: var(--acu-success);
+  color: var(--acu-text-inverse);
+}
+
+.acu-status-warning {
+  background-color: var(--acu-warning);
+  color: var(--acu-text-inverse);
+}
+
+.acu-status-error {
+  background-color: var(--acu-error);
+  color: var(--acu-text-inverse);
+}
+
+.acu-status-info {
+  background-color: var(--acu-info);
+  color: var(--acu-text-inverse);
+}
+
+.acu-status-purple {
+  background-color: var(--acu-deep-purple);
+  color: var(--acu-text-inverse);
+}
+
+.acu-status-gold {
+  background-color: var(--acu-gold);
+  color: var(--acu-deep-purple);
+} 

@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 # Initialize router and templates
 router = APIRouter(prefix="/lti", tags=["lti"])
-templates = Jinja2Templates(directory="app/templates")
+templates = Jinja2Templates(directory="templates")
 
 # Get application settings
 settings = get_settings()

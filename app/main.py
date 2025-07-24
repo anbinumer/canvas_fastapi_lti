@@ -197,6 +197,33 @@ async def lti_info():
     }
 
 
+@app.get("/.well-known/jwks.json")
+async def jwks():
+    """
+    JWKS (JSON Web Key Set) endpoint for LTI 1.3 authentication
+    """
+    try:
+        canvas_config = settings.get_canvas_instance_config()
+        if not canvas_config or not canvas_config.private_key:
+            raise HTTPException(status_code=503, detail="LTI configuration not available")
+        
+        # In a real implementation, you would generate JWKS from the private key
+        # For now, return a placeholder that indicates the endpoint is available
+        return {
+            "keys": [
+                {
+                    "kty": "RSA",
+                    "use": "sig",
+                    "kid": "lti-key-1",
+                    "note": "This endpoint is configured but requires proper key generation"
+                }
+            ]
+        }
+    except Exception as e:
+        logger.error(f"JWKS endpoint error: {str(e)}")
+        raise HTTPException(status_code=503, detail="JWKS not available")
+
+
 @app.on_event("startup")
 async def startup_event():
     """Application startup event"""

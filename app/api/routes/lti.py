@@ -319,12 +319,13 @@ async def get_lti_config():
 
 
 @router.get("/login")
+@router.post("/login")
 async def lti_login(
     request: Request,
-    iss: str,
-    login_hint: str,
-    target_link_uri: str,
-    client_id: str,
+    iss: str = None,
+    login_hint: str = None,
+    target_link_uri: str = None,
+    client_id: str = None,
     lti_message_hint: Optional[str] = None,
 ):
     """

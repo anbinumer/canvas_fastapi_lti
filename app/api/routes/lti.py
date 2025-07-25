@@ -340,7 +340,7 @@ async def lti_login(request: Request):
         client_id = params.get('client_id')
         lti_message_hint = params.get('lti_message_hint')
         
-        logger.info(f"LTI login - Extracted: iss={iss}, login_hint={login_hint}, target_link_uri={target_link_uri}, client_id={client_id}")
+        logger.info(f"Canvas sent target_link_uri: '{target_link_uri}'")
         
         # Check required parameters
         if not iss:
@@ -376,8 +376,7 @@ async def lti_login(request: Request):
             "prompt": "none",
         }
 
-        logger.info(f"Sending redirect_uri to Canvas: {target_link_uri}")
-        logger.info(f"Canvas configured redirect URIs should include: {target_link_uri}")
+        logger.info(f"Sending back to Canvas with redirect_uri: '{target_link_uri}'")
         
         # Only add lti_message_hint if it exists
         if lti_message_hint:
@@ -388,7 +387,7 @@ async def lti_login(request: Request):
         query_string = "&".join([f"{k}={v}" for k, v in auth_params.items()])
         redirect_url = f"{auth_url}?{query_string}"
         
-        logger.info(f"Redirecting to Canvas: {redirect_url}")
+        logger.info(f"Full redirect URL: {redirect_url}")
         
         return RedirectResponse(
             url=redirect_url,

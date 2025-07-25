@@ -33,7 +33,7 @@ from qa_framework.utils import (
 )
 from app.core.exceptions import QAAutomationException
 from services.canvas_service import ProductionCanvasService
-from .session_service import SessionService
+from app.services.session_service import SessionService
 
 logger = logging.getLogger(__name__)
 

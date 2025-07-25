@@ -24,7 +24,7 @@ from qa_framework.base import (
     FindReplaceConfig
 )
 from services.qa_orchestrator import get_qa_orchestrator
-from services.session_service import SessionService
+from app.services.session_service import SessionService
 
 logger = logging.getLogger(__name__)
 

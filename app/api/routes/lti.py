@@ -54,67 +54,67 @@ class LTILaunchRequest(BaseModel):
     roles: Optional[list] = None
 
 
-@router.post("/launch", response_class=HTMLResponse)
+@router.post("/launch")
 async def lti_launch(
     request: Request,
     id_token: str = Form(...),
     state: str = Form(...),
 ):
     """
-    Handle LTI 1.3 launch from Canvas.
+    Handle LTI 1.3 launch from Canvas - Debug version
     """
     try:
-        logger.info(f"LTI launch initiated")
+        logger.info("=== LTI LAUNCH DEBUG ===")
+        logger.info(f"id_token received: {len(id_token)} characters")
+        logger.info(f"state: {state}")
         
-        # Validate the LTI token using your existing security service
-        payload = verify_lti_token(id_token)
-        logger.info(f"LTI token validated for user: {payload.get('sub', 'unknown')}")
+        # Test 1: Can we import the verify function?
+        try:
+            from app.core.security import verify_lti_token
+            logger.info("✅ verify_lti_token imported successfully")
+        except Exception as e:
+            logger.error(f"❌ Failed to import verify_lti_token: {e}")
+            return {"error": "Import error", "details": str(e)}
         
-        # Extract user and course information
-        user_info = {
-            "id": payload.get("sub"),
-            "name": payload.get("name", ""),
-            "given_name": payload.get("given_name", ""),
-            "family_name": payload.get("family_name", ""),
-            "email": payload.get("email", ""),
-            "roles": payload.get("https://purl.imsglobal.org/spec/lti/claim/roles", []),
+        # Test 2: Can we call the verify function?
+        try:
+            payload = verify_lti_token(id_token)
+            logger.info("✅ Token validation successful")
+            logger.info(f"Payload keys: {list(payload.keys())}")
+        except Exception as e:
+            logger.error(f"❌ Token validation failed: {e}")
+            return {"error": "Token validation failed", "details": str(e)}
+        
+        # Test 3: Can we extract basic user info?
+        try:
+            user_info = {
+                "id": payload.get("sub"),
+                "name": payload.get("name", ""),
+                "roles": payload.get("https://purl.imsglobal.org/spec/lti/claim/roles", []),
+            }
+            logger.info(f"✅ User info extracted: {user_info}")
+        except Exception as e:
+            logger.error(f"❌ User info extraction failed: {e}")
+            return {"error": "User info extraction failed", "details": str(e)}
+        
+        # Test 4: Can we create a simple response?
+        return {
+            "message": "LTI launch debug successful",
+            "user_id": user_info.get("id"),
+            "user_name": user_info.get("name"),
+            "roles_count": len(user_info.get("roles", [])),
+            "timestamp": datetime.utcnow().isoformat()
         }
-        
-        # Extract Canvas context
-        canvas_context = {
-            "course_id": payload.get("https://purl.imsglobal.org/spec/lti/claim/context", {}).get("id"),
-            "course_name": payload.get("https://purl.imsglobal.org/spec/lti/claim/context", {}).get("title", ""),
-            "launch_url": str(request.url),
-            "canvas_url": payload.get("https://purl.imsglobal.org/spec/lti/claim/tool_platform", {}).get("url", ""),
-        }
-        
-        # Create session using your existing session service
-        session_data = {
-            "user": user_info,
-            "canvas": canvas_context,
-            "lti_payload": payload,
-            "created_at": datetime.utcnow().isoformat(),
-            "expires_at": (datetime.utcnow() + timedelta(hours=8)).isoformat(),
-        }
-        
-        session_token = create_session_token(session_data)
-        
-        # Create session in session service
-        session_service.create_lti_session(request, user_info, canvas_context, payload)
-        
-        # Render the dashboard template
-        return templates.TemplateResponse("qa-dashboard.html", {
-            "request": request,
-            "user": user_info,
-            "canvas": canvas_context,
-        })
         
     except Exception as e:
-        logger.error(f"Unexpected error during LTI launch: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error during LTI launch"
-        )
+        logger.error(f"❌ Unexpected LTI launch error: {str(e)}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        return {
+            "error": "Unexpected error",
+            "details": str(e),
+            "type": str(type(e))
+        }
 
 
 @router.get("/session", response_model=Dict[str, Any])

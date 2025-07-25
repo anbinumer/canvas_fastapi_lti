@@ -322,11 +322,16 @@ async def get_lti_config():
 @router.post("/login")
 async def lti_login(
     request: Request,
-    iss: str = None,
-    login_hint: str = None,
-    target_link_uri: str = None,
-    client_id: str = None,
+    iss: Optional[str] = None,
+    login_hint: Optional[str] = None,
+    target_link_uri: Optional[str] = None,
+    client_id: Optional[str] = None,
     lti_message_hint: Optional[str] = None,
+    iss_form: Optional[str] = Form(None),
+    login_hint_form: Optional[str] = Form(None),
+    target_link_uri_form: Optional[str] = Form(None),
+    client_id_form: Optional[str] = Form(None),
+    lti_message_hint_form: Optional[str] = Form(None),
 ):
     """
     Handle LTI 1.3 login initiation from Canvas.
@@ -335,16 +340,32 @@ async def lti_login(
     and redirects to Canvas for authentication.
     """
     try:
-        logger.info(f"LTI login initiated from issuer: {iss}")
-        logger.info(f"LTI login params: iss={iss}, login_hint={login_hint}, target_link_uri={target_link_uri}, client_id={client_id}")
-        # Validate required parameters
-        if not iss:
-            raise HTTPException(status_code=400, detail="Missing iss parameter")
-        if not login_hint:
+        # Use form data if available, otherwise use query params
+        iss_val = iss_form or iss
+        login_hint_val = login_hint_form or login_hint
+        target_link_uri_val = target_link_uri_form or target_link_uri
+        client_id_val = client_id_form or client_id
+        lti_message_hint_val = lti_message_hint_form or lti_message_hint
+
+        # Log all received parameters for debugging
+        logger.info(f"LTI login - Query params: iss={iss}, login_hint={login_hint}, target_link_uri={target_link_uri}, client_id={client_id}")
+        logger.info(f"LTI login - Form params: iss={iss_form}, login_hint={login_hint_form}, target_link_uri={target_link_uri_form}, client_id={client_id_form}")
+        logger.info(f"LTI login - Final values: iss={iss_val}, login_hint={login_hint_val}, target_link_uri={target_link_uri_val}, client_id={client_id_val}")
+
+        # Check if we have the required parameters
+        if not iss_val:
+            # Return debug info instead of error
+            return {
+                "error": "Missing iss parameter",
+                "received_query": dict(request.query_params),
+                "method": request.method,
+                "url": str(request.url)
+            }
+        if not login_hint_val:
             raise HTTPException(status_code=400, detail="Missing login_hint parameter")
-        if not target_link_uri:
+        if not target_link_uri_val:
             raise HTTPException(status_code=400, detail="Missing target_link_uri parameter")
-        if not client_id:
+        if not client_id_val:
             raise HTTPException(status_code=400, detail="Missing client_id parameter")
         
         # Generate state and nonce for security
@@ -358,9 +379,9 @@ async def lti_login(
         auth_params = {
             "response_type": "id_token",
             "scope": "openid",
-            "client_id": client_id,
-            "redirect_uri": target_link_uri,
-            "login_hint": login_hint,
+            "client_id": client_id_val,
+            "redirect_uri": target_link_uri_val,
+            "login_hint": login_hint_val,
             "state": state,
             "nonce": nonce,
             "response_mode": "form_post",
@@ -368,11 +389,11 @@ async def lti_login(
         }
         
         # Only add lti_message_hint if it exists
-        if lti_message_hint:
-            auth_params["lti_message_hint"] = lti_message_hint
+        if lti_message_hint_val:
+            auth_params["lti_message_hint"] = lti_message_hint_val
         
         # Construct Canvas authorization URL
-        auth_url = f"{iss}/api/lti/authorize_redirect"
+        auth_url = f"{iss_val}/api/lti/authorize_redirect"
         query_string = "&".join([f"{k}={v}" for k, v in auth_params.items()])
         redirect_url = f"{auth_url}?{query_string}"
         

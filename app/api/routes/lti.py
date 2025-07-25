@@ -367,6 +367,7 @@ async def lti_login(
             "prompt": "none",
         }
         
+        # Only add lti_message_hint if it exists
         if lti_message_hint:
             auth_params["lti_message_hint"] = lti_message_hint
         

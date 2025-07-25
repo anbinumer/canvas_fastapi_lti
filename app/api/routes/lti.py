@@ -383,10 +383,13 @@ async def lti_login(
         )
         
     except Exception as e:
-        logger.error(f"Error during LTI login: {e}")
+        logger.error(f"Detailed LTI login error: {str(e)}")
+        logger.error(f"Error type: {type(e)}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to initiate LTI login"
+            detail=f"LTI login failed: {str(e)}"
         )
 
 

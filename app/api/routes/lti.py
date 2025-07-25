@@ -320,68 +320,56 @@ async def get_lti_config():
 
 @router.get("/login")
 @router.post("/login")
-async def lti_login(
-    request: Request,
-    iss: Optional[str] = None,
-    login_hint: Optional[str] = None,
-    target_link_uri: Optional[str] = None,
-    client_id: Optional[str] = None,
-    lti_message_hint: Optional[str] = None,
-    iss_form: Optional[str] = Form(None),
-    login_hint_form: Optional[str] = Form(None),
-    target_link_uri_form: Optional[str] = Form(None),
-    client_id_form: Optional[str] = Form(None),
-    lti_message_hint_form: Optional[str] = Form(None),
-):
-    """
-    Handle LTI 1.3 login initiation from Canvas.
-    
-    This is the OIDC login endpoint that receives the initial login request
-    and redirects to Canvas for authentication.
-    """
+async def lti_login(request: Request):
     try:
-        # Use form data if available, otherwise use query params
-        iss_val = iss_form or iss
-        login_hint_val = login_hint_form or login_hint
-        target_link_uri_val = target_link_uri_form or target_link_uri
-        client_id_val = client_id_form or client_id
-        lti_message_hint_val = lti_message_hint_form or lti_message_hint
-
-        # Log all received parameters for debugging
-        logger.info(f"LTI login - Query params: iss={iss}, login_hint={login_hint}, target_link_uri={target_link_uri}, client_id={client_id}")
-        logger.info(f"LTI login - Form params: iss={iss_form}, login_hint={login_hint_form}, target_link_uri={target_link_uri_form}, client_id={client_id_form}")
-        logger.info(f"LTI login - Final values: iss={iss_val}, login_hint={login_hint_val}, target_link_uri={target_link_uri_val}, client_id={client_id_val}")
-
-        # Check if we have the required parameters
-        if not iss_val:
-            # Return debug info instead of error
+        # Handle both GET (query params) and POST (form data)
+        if request.method == "GET":
+            params = dict(request.query_params)
+        else:  # POST
+            form_data = await request.form()
+            params = dict(form_data)
+        
+        # Log what we received
+        logger.info(f"LTI login - Method: {request.method}")
+        logger.info(f"LTI login - Received params: {params}")
+        
+        # Extract parameters
+        iss = params.get('iss')
+        login_hint = params.get('login_hint')
+        target_link_uri = params.get('target_link_uri')
+        client_id = params.get('client_id')
+        lti_message_hint = params.get('lti_message_hint')
+        
+        logger.info(f"LTI login - Extracted: iss={iss}, login_hint={login_hint}, target_link_uri={target_link_uri}, client_id={client_id}")
+        
+        # Check required parameters
+        if not iss:
             return {
                 "error": "Missing iss parameter",
-                "received_query": dict(request.query_params),
                 "method": request.method,
-                "url": str(request.url)
+                "all_params": params,
+                "headers": dict(request.headers)
             }
-        if not login_hint_val:
-            raise HTTPException(status_code=400, detail="Missing login_hint parameter")
-        if not target_link_uri_val:
-            raise HTTPException(status_code=400, detail="Missing target_link_uri parameter")
-        if not client_id_val:
-            raise HTTPException(status_code=400, detail="Missing client_id parameter")
+        
+        if not login_hint or not target_link_uri or not client_id:
+            return {
+                "error": "Missing required parameters",
+                "method": request.method,
+                "received": params,
+                "required": ["iss", "login_hint", "target_link_uri", "client_id"]
+            }
         
         # Generate state and nonce for security
         state = secrets.token_urlsafe(32)
         nonce = secrets.token_urlsafe(32)
         
-        # Store state and nonce for validation (in production, use Redis or database)
-        # For now, we'll include them in the redirect
-        
         # Build authorization URL for Canvas
         auth_params = {
             "response_type": "id_token",
             "scope": "openid",
-            "client_id": client_id_val,
-            "redirect_uri": target_link_uri_val,
-            "login_hint": login_hint_val,
+            "client_id": client_id,
+            "redirect_uri": target_link_uri,
+            "login_hint": login_hint,
             "state": state,
             "nonce": nonce,
             "response_mode": "form_post",
@@ -389,15 +377,15 @@ async def lti_login(
         }
         
         # Only add lti_message_hint if it exists
-        if lti_message_hint_val:
-            auth_params["lti_message_hint"] = lti_message_hint_val
+        if lti_message_hint:
+            auth_params["lti_message_hint"] = lti_message_hint
         
         # Construct Canvas authorization URL
-        auth_url = f"{iss_val}/api/lti/authorize_redirect"
+        auth_url = f"{iss}/api/lti/authorize_redirect"
         query_string = "&".join([f"{k}={v}" for k, v in auth_params.items()])
         redirect_url = f"{auth_url}?{query_string}"
         
-        logger.info(f"Redirecting to Canvas for authentication: {redirect_url}")
+        logger.info(f"Redirecting to Canvas: {redirect_url}")
         
         return RedirectResponse(
             url=redirect_url,
@@ -405,14 +393,14 @@ async def lti_login(
         )
         
     except Exception as e:
-        logger.error(f"Detailed LTI login error: {str(e)}")
-        logger.error(f"Error type: {type(e)}")
+        logger.error(f"Error during LTI login: {e}")
         import traceback
         logger.error(f"Traceback: {traceback.format_exc()}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"LTI login failed: {str(e)}"
-        )
+        return {
+            "error": "Exception occurred",
+            "details": str(e),
+            "method": request.method
+        }
 
 
 @router.get("/health")

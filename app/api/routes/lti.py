@@ -336,6 +336,16 @@ async def lti_login(
     """
     try:
         logger.info(f"LTI login initiated from issuer: {iss}")
+        logger.info(f"LTI login params: iss={iss}, login_hint={login_hint}, target_link_uri={target_link_uri}, client_id={client_id}")
+        # Validate required parameters
+        if not iss:
+            raise HTTPException(status_code=400, detail="Missing iss parameter")
+        if not login_hint:
+            raise HTTPException(status_code=400, detail="Missing login_hint parameter")
+        if not target_link_uri:
+            raise HTTPException(status_code=400, detail="Missing target_link_uri parameter")
+        if not client_id:
+            raise HTTPException(status_code=400, detail="Missing client_id parameter")
         
         # Generate state and nonce for security
         state = secrets.token_urlsafe(32)

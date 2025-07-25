@@ -32,7 +32,7 @@ from qa_framework.utils import (
     ErrorCategory
 )
 from app.core.exceptions import QAAutomationException
-from services.canvas_service import ProductionCanvasService
+from app.services.canvas_service import ProductionCanvasService
 from app.services.session_service import SessionService
 
 logger = logging.getLogger(__name__)

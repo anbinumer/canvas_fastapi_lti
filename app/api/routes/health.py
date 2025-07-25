@@ -19,7 +19,9 @@ import redis.asyncio as redis
 from app.core.config import get_settings
 from app.core.rate_limiter import get_rate_limiter
 from app.core.canvas_error_handler import get_canvas_error_handler
-from services.canvas_service import ProductionCanvasService
+from app.services.canvas_service import ProductionCanvasService
+from app.services.canvas_service import create_canvas_service_for_instance
+from app.core.rate_limiter import check_canvas_rate_limit
 
 logger = logging.getLogger(__name__)
 settings = get_settings()

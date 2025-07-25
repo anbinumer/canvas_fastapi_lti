@@ -12,12 +12,12 @@ from fastapi.staticfiles import StaticFiles
 from datetime import datetime
 
 # Core imports
-from core.config import get_settings
-from core.security import (
+from app.core.config import get_settings
+from app.core.security import (
     create_session_middleware,
     create_security_headers_middleware
 )
-from core.exceptions import (
+from app.core.exceptions import (
     LTIAuthenticationError,
     LTIValidationError,
     SessionError,

@@ -15,7 +15,7 @@ from dataclasses import dataclass
 import json
 
 import aiohttp
-from core.config import get_settings
+from app.core.config import get_settings
 
 logger = logging.getLogger(__name__)
 settings = get_settings()

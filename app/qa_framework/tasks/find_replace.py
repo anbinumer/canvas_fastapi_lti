@@ -32,6 +32,7 @@ from qa_framework.base import (
     QATaskExecutionError
 )
 from qa_framework.utils import handle_qa_error, ErrorCategory
+from app.services.canvas_service import CanvasService
 
 logger = logging.getLogger(__name__)
 
@@ -336,7 +337,6 @@ class FindReplaceQATask(QATask):
         """Get Canvas service instance with authentication"""
         # This will be implemented when we create the Canvas service
         # For now, create a placeholder
-        from services.canvas_service import CanvasService
         return CanvasService(
             base_url=config.canvas_instance_url,
             access_token=canvas_context.get('access_token') if canvas_context else None

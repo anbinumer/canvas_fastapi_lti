@@ -3,7 +3,7 @@ QA Automation LTI Tool - Simplified FastAPI Application for Railway Testing
 """
 
 import logging
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from datetime import datetime
 from app.api.routes.lti import router as lti_router
@@ -123,6 +123,28 @@ async def terms_of_service():
         "terms": "This tool is provided for educational QA automation purposes.",
         "usage": "Authorized educational use only",
         "version": "2.4.0"
+    }
+
+@app.get("/lti/login-test")
+@app.post("/lti/login-test")
+async def test_lti_login(request: Request):
+    """Working LTI login test endpoint"""
+    return {
+        "message": "LTI login test working",
+        "method": request.method,
+        "url": str(request.url),
+        "query_params": dict(request.query_params),
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
+@app.post("/lti/launch-test")
+async def test_lti_launch(request: Request):
+    """Working LTI launch test endpoint"""
+    return {
+        "message": "LTI launch test working",
+        "method": request.method,
+        "url": str(request.url),
+        "timestamp": datetime.utcnow().isoformat()
     }
 
 @app.get("/debug/routes")

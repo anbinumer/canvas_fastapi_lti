@@ -7,7 +7,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from datetime import datetime
 from app.api.routes.lti import router as lti_router
-from app.api.routes.qa_tasks import router as qa_tasks_router
+# from app.api.routes.qa_tasks import router as qa_tasks_router  # ← Commented out temporarily
 
 # Configure basic logging
 logging.basicConfig(level=logging.INFO)
@@ -21,7 +21,7 @@ app = FastAPI(
 )
 
 app.include_router(lti_router)
-app.include_router(qa_tasks_router)
+# app.include_router(qa_tasks_router)  # ← Commented out temporarily
 
 @app.get("/")
 async def root():

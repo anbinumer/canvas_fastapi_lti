@@ -368,13 +368,16 @@ async def lti_login(request: Request):
             "response_type": "id_token",
             "scope": "openid",
             "client_id": client_id,
-            "redirect_uri": target_link_uri,
+            "redirect_uri": target_link_uri,  # This must match Canvas config exactly
             "login_hint": login_hint,
             "state": state,
             "nonce": nonce,
             "response_mode": "form_post",
             "prompt": "none",
         }
+
+        logger.info(f"Sending redirect_uri to Canvas: {target_link_uri}")
+        logger.info(f"Canvas configured redirect URIs should include: {target_link_uri}")
         
         # Only add lti_message_hint if it exists
         if lti_message_hint:

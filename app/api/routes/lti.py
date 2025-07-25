@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 from typing import Dict, Any, Optional
 
 from fastapi import APIRouter, Request, Form, Depends, HTTPException, status
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 # from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, ValidationError
 
@@ -108,12 +108,13 @@ async def lti_launch(
         
         # Render the main application interface
         # Replace TemplateResponse with JSON response
-        return {
+        return JSONResponse(content={
             "message": "LTI launch successful",
             "user": user_info,
             "canvas": canvas_context,
             "session_id": session_id,
-        }
+            "redirect_url": "/dashboard"
+        })
         
     except ValidationError as e:
         logger.error(f"LTI validation error: {e}")

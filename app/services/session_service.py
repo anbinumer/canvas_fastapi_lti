@@ -6,8 +6,8 @@ import logging
 from typing import Dict, Any, Optional, List
 from datetime import datetime, timedelta
 from fastapi import Request, Response
-from core.config import settings
-from core.exceptions import SessionError, LTIValidationError
+from app.core.config import settings
+from app.core.exceptions import SessionError, LTIValidationError
 
 
 logger = logging.getLogger(__name__)

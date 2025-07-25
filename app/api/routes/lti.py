@@ -10,7 +10,7 @@ from typing import Dict, Any, Optional
 
 from fastapi import APIRouter, Request, Form, Depends, HTTPException, status
 from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
+# from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, ValidationError
 
 from app.core.config import get_settings
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 # Initialize router and templates
 router = APIRouter(prefix="/lti", tags=["lti"])
-templates = Jinja2Templates(directory="templates")
+# templates = Jinja2Templates(directory="templates")
 
 # Get application settings
 settings = get_settings()
@@ -107,24 +107,13 @@ async def lti_launch(
         logger.info(f"Session created: {session_id}")
         
         # Render the main application interface
-        response = templates.TemplateResponse("qa-dashboard.html", {
-            "request": request,
+        # Replace TemplateResponse with JSON response
+        return {
+            "message": "LTI launch successful",
             "user": user_info,
             "canvas": canvas_context,
             "session_id": session_id,
-        })
-        
-        # Set session cookie
-        response.set_cookie(
-            key="lti_session",
-            value=session_token,
-            httponly=True,
-            secure=settings.environment == "production",
-            samesite="none" if settings.environment == "production" else "lax",
-            max_age=28800,  # 8 hours
-        )
-        
-        return response
+        }
         
     except ValidationError as e:
         logger.error(f"LTI validation error: {e}")

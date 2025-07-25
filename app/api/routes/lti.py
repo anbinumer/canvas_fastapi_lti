@@ -54,86 +54,38 @@ class LTILaunchRequest(BaseModel):
     roles: Optional[list] = None
 
 
-@router.post("/launch", response_class=HTMLResponse)
+@router.post("/launch")
 async def lti_launch(
     request: Request,
     id_token: str = Form(...),
     state: str = Form(...),
 ):
     """
-    Handle LTI 1.3 launch from Canvas.
-    
-    This endpoint receives the LTI launch request from Canvas, validates the JWT token,
-    creates a session, and redirects to the appropriate application interface.
+    Handle LTI 1.3 launch from Canvas - Simplified for debugging
     """
     try:
-        logger.info(f"LTI launch initiated from {request.client.host}")
+        logger.info("=== LTI LAUNCH STARTED ===")
+        logger.info(f"Received id_token: {id_token[:50]}...")  # First 50 chars
+        logger.info(f"Received state: {state}")
         
-        # Validate the LTI token
-        payload = verify_lti_token(id_token)
-        logger.info(f"LTI token validated for user: {payload.get('sub', 'unknown')}")
-        
-        # Extract user and course information
-        user_info = {
-            "id": payload.get("sub"),
-            "name": payload.get("name", ""),
-            "given_name": payload.get("given_name", ""),
-            "family_name": payload.get("family_name", ""),
-            "email": payload.get("email", ""),
-            "roles": payload.get("https://purl.imsglobal.org/spec/lti/claim/roles", []),
-        }
-        
-        # Extract Canvas context
-        canvas_context = {
-            "course_id": payload.get("custom_canvas_course_id"),
-            "user_id": payload.get("custom_canvas_user_id"),
-            "course_name": payload.get("https://purl.imsglobal.org/spec/lti/claim/context", {}).get("title", ""),
-            "launch_url": str(request.url),
-            "canvas_url": payload.get("https://purl.imsglobal.org/spec/lti/claim/tool_platform", {}).get("url", ""),
-        }
-        
-        # Create session
-        session_data = {
-            "user": user_info,
-            "canvas": canvas_context,
-            "lti_payload": payload,
-            "created_at": datetime.utcnow().isoformat(),
-            "expires_at": (datetime.utcnow() + timedelta(hours=8)).isoformat(),
-        }
-        
-        session_token = create_session_token(session_data)
-        session_id = await session_service.create_session(session_token, session_data)
-        
-        logger.info(f"Session created: {session_id}")
-        
-        # Render the main application interface
-        # Replace TemplateResponse with JSON response
-        return JSONResponse(content={
+        # Return success without processing for now
+        return {
             "message": "LTI launch successful",
-            "user": user_info,
-            "canvas": canvas_context,
-            "session_id": session_id,
-            "redirect_url": "/dashboard"
-        })
+            "status": "debug",
+            "id_token_preview": id_token[:100],
+            "state": state,
+            "timestamp": datetime.utcnow().isoformat()
+        }
         
-    except ValidationError as e:
-        logger.error(f"LTI validation error: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid LTI launch request"
-        )
-    except LTIAuthenticationError as e:
-        logger.error(f"LTI error: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="LTI authentication failed"
-        )
     except Exception as e:
-        logger.error(f"Unexpected error during LTI launch: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error during LTI launch"
-        )
+        logger.error(f"LTI launch error: {str(e)}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        return {
+            "error": "LTI launch failed",
+            "details": str(e),
+            "timestamp": datetime.utcnow().isoformat()
+        }
 
 
 @router.get("/session", response_model=Dict[str, Any])

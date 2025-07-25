@@ -10,7 +10,7 @@ from typing import Dict, Any, Optional
 
 from fastapi import APIRouter, Request, Form, Depends, HTTPException, status
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
-# from fastapi.templating import Jinja2Templates
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, ValidationError
 
 from app.core.config import get_settings
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 # Initialize router and templates
 router = APIRouter(prefix="/lti", tags=["lti"])
-# templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="templates")
 
 # Get application settings
 settings = get_settings()
@@ -54,38 +54,67 @@ class LTILaunchRequest(BaseModel):
     roles: Optional[list] = None
 
 
-@router.post("/launch")
+@router.post("/launch", response_class=HTMLResponse)
 async def lti_launch(
     request: Request,
     id_token: str = Form(...),
     state: str = Form(...),
 ):
     """
-    Handle LTI 1.3 launch from Canvas - Simplified for debugging
+    Handle LTI 1.3 launch from Canvas.
     """
     try:
-        logger.info("=== LTI LAUNCH STARTED ===")
-        logger.info(f"Received id_token: {id_token[:50]}...")  # First 50 chars
-        logger.info(f"Received state: {state}")
+        logger.info(f"LTI launch initiated")
         
-        # Return success without processing for now
-        return {
-            "message": "LTI launch successful",
-            "status": "debug",
-            "id_token_preview": id_token[:100],
-            "state": state,
-            "timestamp": datetime.utcnow().isoformat()
+        # Validate the LTI token using your existing security service
+        payload = verify_lti_token(id_token)
+        logger.info(f"LTI token validated for user: {payload.get('sub', 'unknown')}")
+        
+        # Extract user and course information
+        user_info = {
+            "id": payload.get("sub"),
+            "name": payload.get("name", ""),
+            "given_name": payload.get("given_name", ""),
+            "family_name": payload.get("family_name", ""),
+            "email": payload.get("email", ""),
+            "roles": payload.get("https://purl.imsglobal.org/spec/lti/claim/roles", []),
         }
+        
+        # Extract Canvas context
+        canvas_context = {
+            "course_id": payload.get("https://purl.imsglobal.org/spec/lti/claim/context", {}).get("id"),
+            "course_name": payload.get("https://purl.imsglobal.org/spec/lti/claim/context", {}).get("title", ""),
+            "launch_url": str(request.url),
+            "canvas_url": payload.get("https://purl.imsglobal.org/spec/lti/claim/tool_platform", {}).get("url", ""),
+        }
+        
+        # Create session using your existing session service
+        session_data = {
+            "user": user_info,
+            "canvas": canvas_context,
+            "lti_payload": payload,
+            "created_at": datetime.utcnow().isoformat(),
+            "expires_at": (datetime.utcnow() + timedelta(hours=8)).isoformat(),
+        }
+        
+        session_token = create_session_token(session_data)
+        
+        # Create session in session service
+        session_service.create_lti_session(request, user_info, canvas_context, payload)
+        
+        # Render the dashboard template
+        return templates.TemplateResponse("qa-dashboard.html", {
+            "request": request,
+            "user": user_info,
+            "canvas": canvas_context,
+        })
         
     except Exception as e:
-        logger.error(f"LTI launch error: {str(e)}")
-        import traceback
-        logger.error(f"Traceback: {traceback.format_exc()}")
-        return {
-            "error": "LTI launch failed",
-            "details": str(e),
-            "timestamp": datetime.utcnow().isoformat()
-        }
+        logger.error(f"Unexpected error during LTI launch: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error during LTI launch"
+        )
 
 
 @router.get("/session", response_model=Dict[str, Any])
